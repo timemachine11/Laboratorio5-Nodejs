@@ -3,23 +3,25 @@ const router = express.Router()
 
 let { productos } = require("../models/producto")
 
+const validarProducto = require('../middleware/validarProducto')
+
 router.get('/', (req, res) => {
     res.json(productos)
 })
 
-// app.get('/:id', (req, res) => {
-//     const id_producto = req.params.id
-//     const filtro = productos.filter((producto) => producto.id_producto == id_producto)
+router.get('/:id', (req, res) => {
+    const id_producto = req.params.id
+    const filtro = productos.filter((producto) => producto.id_producto == id_producto)
 
-//     if (filtro.length > 0) {
-//         return res.json(filtro)
+    if (filtro.length > 0) {
+        return res.json(filtro)
 
-//     } else {
-//         return res.status(404).json({status: "El producto no esta disponible..."})
-//     }
-// })
+    } else {
+        return res.status(404).json({status: "El producto no esta disponible..."})
+    }
+})
 
-router.post('/', (req, res) => {
+router.post('/', validarProducto, (req, res) => {
     let body = req.body
     body.id_producto = productos.length + 1
     productos.push(body)

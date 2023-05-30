@@ -1,8 +1,11 @@
 const express = require('express')
 const router = express.Router()
 
-let {empleados} = require('../models/empleado')
-const { usuarios } = require('../models/usuario')
+let { empleados } = require('../models/empleado')
+
+// const { usuarios } = require('../models/usuario')
+
+const validarEmpleado = require('../middleware/validarEmpleado')
 
 router.get('/', (req, res) => {
     res.json(empleados)
@@ -16,11 +19,11 @@ router.get('/:id', (req, res) => {
         return res.json(filtro)
 
     } else {
-        return res.status(404).json({status: 'este empleado no se encuentra'})
+        return res.status(404).json({ status: 'este empleado no se encuentra' })
     }
 })
 
-router.post('/', (req, res) => {
+router.post('/', validarEmpleado, (req, res) => {
     let body = req.body
 
     body.id = empleados.length + 1
@@ -29,10 +32,10 @@ router.post('/', (req, res) => {
     return res.status(201).json(body)
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validarEmpleado, (req, res) => {
     let id = req.params.id
     let body = req.body
-    
+
     const filtro = empleados.filter((empleado) => empleado.id == id)
 
     if (filtro.length > 0) {
@@ -42,7 +45,7 @@ router.put('/:id', (req, res) => {
         return res.status(201).json(body)
 
     } else {
-        return res.status(404).json({status: 'el empleado no se encuentra'})
+        return res.status(404).json({ status: 'el empleado no se encuentra' })
     }
 })
 
@@ -54,9 +57,9 @@ router.delete('/:id', (req, res) => {
         empleados = empleados.filter((empleado) => empleado.id != id)
 
         return res.status(200).json(filtro)
-   
+
     } else {
-        return res.status(404).json({status: 'el empleado no se encuentra'})
+        return res.status(404).json({ status: 'el empleado no se encuentra' })
     }
 })
 

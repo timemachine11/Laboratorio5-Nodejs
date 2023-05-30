@@ -3,6 +3,8 @@ const router = express.Router()
 
 let { usuarios } = require("../models/usuario")
 
+const validarUsuario = require('../middleware/validarUsuario')
+
 router.get("/", (req, res) => {
     res.json(usuarios)
 })
@@ -18,7 +20,7 @@ router.get("/:id", (req, res) => {
         return res.status(404).json({ status: "El usuario no se encuentra" })
 })
 
-router.post("/", (req, res) => {
+router.post("/", validarUsuario, (req, res) => {
     let body = req.body
     body.id = usuarios.length + 1
     usuarios.push(body)
